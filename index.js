@@ -21,7 +21,10 @@ const requireLoggedIn = (req, res, next) => {
     const { TOKEN } = req.cookies;
     jwt.verify(TOKEN, JWT_KEY, (err, obj) => {
         if (err) return res.redirect('/dangnhap');
-        next();
+        jwt.sign({ username: obj.username, exp: Math.floor(Date.now() / 1000) + 5 }, JWT_KEY, (errJWT, token) => {
+            res.cookie('TOKEN', token);
+            next();
+        });
     });
 };
 
@@ -43,7 +46,7 @@ app.post('/dangnhap', redirectIfLoggedIn, parser, (req, res) => {
     const { username, password } = req.body;
     const user = arrUser.find(e => e.username === username && e.pass === password);
     if (!user) return res.send('Dang nhap that bai');
-    jwt.sign({ username }, JWT_KEY, (err, token) => {
+    jwt.sign({ username, exp: Math.floor(Date.now() / 1000) + 10 }, JWT_KEY, (err, token) => {
         res.cookie('TOKEN', token);
         res.send('Dang nhap thanh cong');
     });

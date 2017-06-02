@@ -17,19 +17,29 @@ app.get('/', (req, res) => {
     res.render('home');
 });
 
-app.get('/private', (req, res) => {
-    //Neu da dang nhap --> send: Welcome
-    //Neu chua dang nhap, redirect -> /dangnhap
+const requireLoggedIn = (req, res, next) => {
     const { TOKEN } = req.cookies;
     jwt.verify(TOKEN, JWT_KEY, (err, obj) => {
         if (err) return res.redirect('/dangnhap');
-        res.send('WELCOME');
+        next();
     });
+};
+
+const redirectIfLoggedIn = (req, res, next) => {
+    const { TOKEN } = req.cookies;
+    jwt.verify(TOKEN, JWT_KEY, (err, obj) => {
+        if (!err) return res.redirect('/private');
+        next();
+    });
+};
+
+app.get('/private', requireLoggedIn, (req, res) => {
+    res.send('Welcome!!!');
 });
 
-app.get('/dangnhap', (req, res) => res.render('dangnhap'));
+app.get('/dangnhap', redirectIfLoggedIn, (req, res) => res.render('dangnhap'));
 
-app.post('/dangnhap', parser, (req, res) => {
+app.post('/dangnhap', redirectIfLoggedIn, parser, (req, res) => {
     const { username, password } = req.body;
     const user = arrUser.find(e => e.username === username && e.pass === password);
     if (!user) return res.send('Dang nhap that bai');

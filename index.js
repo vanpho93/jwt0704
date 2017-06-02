@@ -68,3 +68,16 @@ const arrUser = [
 // });
 
 app.listen(3000, () => console.log('Server started!'));
+
+/*
+    ReactJS: trong thang 6 - dau thang 7
+
+    24h - 23/6/2017 han cuoi nop do an
+    link trang web
+    source code: github - file database da export .sql
+    Video ngan gioi thieu
+    email: 
+        - Ten, sdt, NODE 07/04, ngay sinh
+        - Ten do an
+        - Chu de: Nop do an cuoi khoa NodeJS 07/04
+*/
